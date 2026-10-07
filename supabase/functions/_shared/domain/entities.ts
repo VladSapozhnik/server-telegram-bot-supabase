@@ -46,3 +46,30 @@ export interface MessageEntity {
   text: string;
   created_at?: string;
 }
+
+export type ArticleStatus = "draft" | "published" | "archived";
+
+export interface ArticleEntity {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  status: ArticleStatus;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateArticleDto {
+  title: string;
+  slug: string;
+  content: string;
+  status?: ArticleStatus;
+}
+
+export interface UpdateArticleDto {
+  title?: string;
+  slug?: string;
+  content?: string;
+  status?: ArticleStatus;
+}
+

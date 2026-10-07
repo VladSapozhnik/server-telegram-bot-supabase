@@ -18,22 +18,43 @@ export class SupabaseBotRepository implements IBotDatabaseRepository {
   }): Promise<void> {
     const activityIso = (clientData.activityAt || new Date()).toISOString();
 
-    const { error } = await this.client
+    const payload: Record<string, unknown> = {
+      id: clientData.id,
+      last_activity_at: activityIso,
+    };
+
+    if (clientData.firstName !== undefined) payload.first_name = clientData.firstName;
+    if (clientData.lastName !== undefined) payload.last_name = clientData.lastName;
+    if (clientData.username !== undefined) payload.username = clientData.username;
+
+    // Сначала пробуем сделать update существующей записи
+    const { data: updated, error: updateError } = await this.client
       .from("clients")
-      .upsert(
-        {
+      .update(payload)
+      .eq("id", clientData.id)
+      .select("id");
+
+    if (updateError) {
+      console.error("Error updating client activity:", updateError);
+      throw updateError;
+    }
+
+    // Если клиента еще нет в базе, вставляем новую запись
+    if (!updated || updated.length === 0) {
+      const { error: insertError } = await this.client
+        .from("clients")
+        .insert({
           id: clientData.id,
           first_name: clientData.firstName ?? null,
           last_name: clientData.lastName ?? null,
           username: clientData.username ?? null,
           last_activity_at: activityIso,
-        },
-        { onConflict: "id" },
-      );
+        });
 
-    if (error) {
-      console.error("Error upserting client activity:", error);
-      throw error;
+      if (insertError) {
+        console.error("Error inserting client:", insertError);
+        throw insertError;
+      }
     }
   }
 

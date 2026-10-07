@@ -1,4 +1,4 @@
-import { ClientEntity, MessageEntity } from "../domain/entities.ts";
+import { ArticleEntity, ClientEntity, CreateArticleDto, MessageEntity, UpdateArticleDto } from "../domain/entities.ts";
 
 export interface IExchangeRateProvider {
   getUsdRate(currency: string): Promise<number | null>;
@@ -23,6 +23,14 @@ export interface IBotDatabaseRepository {
 
   getAllClientsRecentFirst(): Promise<ClientEntity[]>;
   getAllMessagesRecentFirst(): Promise<MessageEntity[]>;
+}
+
+export interface IArticleRepository {
+  getAllArticles(): Promise<ArticleEntity[]>;
+  getArticleById(id: string): Promise<ArticleEntity | null>;
+  createArticle(dto: CreateArticleDto): Promise<ArticleEntity>;
+  updateArticle(id: string, dto: UpdateArticleDto): Promise<ArticleEntity>;
+  deleteArticle(id: string): Promise<void>;
 }
 
 export interface ITelegramSender {

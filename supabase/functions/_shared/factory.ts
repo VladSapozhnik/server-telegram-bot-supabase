@@ -1,10 +1,12 @@
 import { createClient } from "npm:@supabase/supabase-js@^2.49.1";
 import {
   FrankfurterRateAdapter,
+  SupabaseArticleRepository,
   SupabaseBotRepository,
   TelegramApiAdapter,
 } from "./adapters/index.ts";
 import {
+  ArticleCrudUseCase,
   GetClientsRecentFirstUseCase,
   GetCurrencyRateUseCase,
   GetMessagesRecentFirstUseCase,
@@ -24,6 +26,7 @@ export function createSupabaseClient() {
 export function createBotContainer() {
   const supabase = createSupabaseClient();
   const dbRepo = new SupabaseBotRepository(supabase);
+  const articleRepo = new SupabaseArticleRepository(supabase);
   const rateProvider = new FrankfurterRateAdapter();
   const botToken = Deno.env.get("TELEGRAM_BOT_TOKEN") ?? "";
   const telegramSender = new TelegramApiAdapter(botToken);
@@ -36,10 +39,12 @@ export function createBotContainer() {
   );
   const getClientsRecentFirstUseCase = new GetClientsRecentFirstUseCase(dbRepo);
   const getMessagesRecentFirstUseCase = new GetMessagesRecentFirstUseCase(dbRepo);
+  const articleCrudUseCase = new ArticleCrudUseCase(articleRepo);
 
   return {
     supabase,
     dbRepo,
+    articleRepo,
     rateProvider,
     telegramSender,
     // Use cases
@@ -47,5 +52,7 @@ export function createBotContainer() {
     handleTelegramMessageUseCase,
     getClientsRecentFirstUseCase,
     getMessagesRecentFirstUseCase,
+    articleCrudUseCase,
   };
 }
+
