@@ -1,4 +1,5 @@
-import { SupabaseClient } from "npm:@supabase/supabase-js@^2.49.1";
+import { SupabaseClient } from "@supabase/supabase-js";
+
 import { ClientEntity, MessageEntity } from "../domain/entities.ts";
 import { IBotDatabaseRepository } from "../ports/index.ts";
 

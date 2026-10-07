@@ -1,4 +1,5 @@
-import { SupabaseClient } from "npm:@supabase/supabase-js@^2.49.1";
+import { SupabaseClient } from "@supabase/supabase-js";
+
 import { ArticleEntity, CreateArticleDto, UpdateArticleDto } from "../domain/entities.ts";
 import { IArticleRepository } from "../ports/index.ts";
 
