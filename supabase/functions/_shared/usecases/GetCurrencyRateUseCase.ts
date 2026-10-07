@@ -9,11 +9,22 @@ export class GetCurrencyRateUseCase {
     rate?: number | null;
     messageText: string;
   }> {
-    if (text.startsWith("/start")) {
+    const lower = text.trim().toLowerCase();
+
+    if (lower.startsWith("/start")) {
       return {
         found: false,
         messageText:
-          "Привет! Отправь мне код любой валюты (например: EUR, GBP, JPY, PLN, CNY), и я пришлю её курс относительно USD.",
+          "Привет! Отправь мне код любой валюты (например: EUR, GBP, JPY, PLN, CNY), и я пришлю её курс относительно USD.\n\nСписок всех доступных валют: /currencies",
+      };
+    }
+
+    if (lower === "/currencies" || lower === "/list" || lower === "валюты" || lower === "/help") {
+      const supported = await this.rateProvider.getSupportedCurrencies();
+      const listStr = supported.sort().join(", ");
+      return {
+        found: true,
+        messageText: `📋 Список всех доступных валют (${supported.length}):\n\n${listStr}\n\nОтправьте любой из этих кодов, чтобы узнать курс к USD.`,
       };
     }
 
