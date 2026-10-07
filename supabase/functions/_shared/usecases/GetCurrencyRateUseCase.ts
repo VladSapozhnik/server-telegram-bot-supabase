@@ -13,17 +13,27 @@ export class GetCurrencyRateUseCase {
       return {
         found: false,
         messageText:
-          "Привет! Отправь мне код любой валюты (например: EUR, GBP, JPY, RUB), и я пришлю её курс относительно USD.",
+          "Привет! Отправь мне код любой валюты (например: EUR, GBP, JPY, PLN, CNY), и я пришлю её курс относительно USD.",
       };
     }
 
     const detectedCurrency = await this.findCurrencyInText(text);
 
     if (!detectedCurrency) {
+      // Проверяем, возможно пользователь ввёл 3-буквенный код валюты, которой нет в ЕЦБ/Frankfurter (например: BYN, RUB, KZT)
+      const potentialCodes = text.match(/\b[a-zA-Z]{3}\b/g);
+      if (potentialCodes && potentialCodes.length > 0) {
+        const attempted = potentialCodes[0].toUpperCase();
+        return {
+          found: false,
+          messageText: `Валюта ${attempted} не поддерживается европейским сервисом Frankfurter.\n\nПопробуйте одну из доступных: EUR, GBP, JPY, PLN, CNY, CHF, CAD, AUD, TRY.`,
+        };
+      }
+
       return {
         found: false,
         messageText:
-          "Сообщение принято! Менеджер скоро ответит вам.\n\n(Если вы хотите узнать курс валюты к USD, отправьте её трёхбуквенный код, например: EUR, GBP, JPY, CNY).",
+          "Сообщение принято! Менеджер скоро ответит вам.\n\n(Если вы хотите узнать курс валюты к USD, отправьте её трёхбуквенный код, например: EUR, GBP, JPY, PLN, CNY).",
       };
     }
 
