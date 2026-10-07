@@ -37,14 +37,14 @@ export class GetCurrencyRateUseCase {
         const attempted = potentialCodes[0].toUpperCase();
         return {
           found: false,
-          messageText: `Валюта ${attempted} не поддерживается европейским сервисом Frankfurter.\n\nПопробуйте одну из доступных: EUR, GBP, JPY, PLN, CNY, CHF, CAD, AUD, TRY.`,
+          messageText: `Валюта ${attempted} не поддерживается европейским сервисом Frankfurter.\n\nПопробуйте одну из доступных: EUR, GBP, JPY, PLN, CNY (все валюты: /currencies).`,
         };
       }
 
       return {
         found: false,
         messageText:
-          "Сообщение принято! Менеджер скоро ответит вам.\n\n(Если вы хотите узнать курс валюты к USD, отправьте её трёхбуквенный код, например: EUR, GBP, JPY, PLN, CNY).",
+          "Сообщение принято! Менеджер скоро ответит вам.\n\n(Если вы хотите узнать курс валюты к USD, отправьте её трёхбуквенный код, например: EUR, GBP, JPY, PLN, CNY, либо команду /currencies для полного списка).",
       };
     }
 
